@@ -16,10 +16,10 @@ from bottle import request, app
 
 BASE = os.path.abspath(os.path.dirname(__file__))
 
-def log_handler(log_path):
+def log_handler(log_path, name="webhook"):
     """ create logger """
-    logger=logging.getLogger("webhook")
-    logger.setLevel(logging.WARNING)
+    logger=logging.getLogger(name)
+    logger.setLevel(logging.INFO)
 
     handler = logging.FileHandler(log_path)
     formatter = logging.Formatter('%(asctime)s-%(levelname)s:%(message)s')
@@ -43,6 +43,8 @@ def receive(project):
         bash_file = "./shell/%s.sh" % project
         log_file = os.path.join(BASE, "logs/%s.log" % project)
 
+        logger = log_handler(log_file)
+
         try:
             with open(config_file) as fi:
                 con_json = json.loads(fi.read())
@@ -50,13 +52,18 @@ def receive(project):
         except IOError:
             return "Json File Wrong"
 
+        if project != request.json['repository']['name']:
+            return json.dumps({"status":False})
+
         if deploy_branch in request.json['ref']:
+
+            logger.info("Pusher is %s" % request.json['pusher']['name'])
+            logger.info("Last Message is %s" 
+                    % request.json['commits'][0]['message'])
 
             proc = subprocess.Popen("bash %s" % bash_file,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT, shell=True)
-
-            logger = log_handler(log_file)
 
             for line in proc.stdout:
                 logger.error(line)
