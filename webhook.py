@@ -46,10 +46,11 @@ def receive(project):
         try:
             with open(config_file) as fi:
                 con_json = json.loads(fi.read())
+            deploy_branch = con_json.get("branch", "master")
         except IOError:
-            pass
+            return "Json File Wrong"
 
-        if request.json['action'] == "push":
+        if deploy_branch in request.json['ref']:
 
             proc = subprocess.Popen(bash_file,
                 stdout=subprocess.PIPE,
