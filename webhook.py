@@ -12,7 +12,7 @@ import logging
 # import logging.handlers
 
 import bottle
-from bottle import request
+from bottle import request, app
 
 BASE = os.path.abspath(os.path.dirname(__file__))
 
@@ -71,9 +71,9 @@ def receive(project):
 
 
 
-def dev_server():
-    bottle.run(host='0.0.0.0', port=8080, debug=True)
-
-if '__main__' == __name__:
-    from django.utils import autoreload
-    autoreload.main(dev_server)
+#def dev_server():
+#    bottle.run(host='0.0.0.0', port=8080, debug=True)
+#
+#if '__main__' == __name__:
+#    from django.utils import autoreload
+#    autoreload.main(dev_server)
