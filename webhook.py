@@ -28,11 +28,6 @@ def log_handler(log_path, name="webhook"):
     logger.addHandler(handler)
     return logger
 
-@bottle.route("/")
-def index():
-
-    return "hello"
-
 @bottle.route("/hook/<project>/", method="GET")
 @bottle.route("/hook/<project>/", method="POST")
 def receive(project):
@@ -62,7 +57,7 @@ def receive(project):
         if deploy_branch in request.json['ref']:
 
             logger.info("Pusher is %s" % request.json['pusher']['name'])
-            logger.info("Last Message is %s" 
+            logger.info("Last Message is %s"
                     % request.json['commits'][0]['message'])
 
             proc = subprocess.Popen("bash %s" % bash_file,
