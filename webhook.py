@@ -33,7 +33,7 @@ def log_handler(log_path, name="webhook"):
 def receive(project):
 
     if request.headers.get('X-Github-Event') != "push" or \
-        request.headers.get('User-Agent').startswith('GitHub Hookshot'):
+        not request.headers.get('User-Agent').startswith('GitHub Hookshot'):
             return json.dumps({"status":"No Permisstion"})
 
     if request.method == "POST":
