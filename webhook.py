@@ -52,7 +52,7 @@ def receive(project):
 
         if deploy_branch in request.json['ref']:
 
-            proc = subprocess.Popen(bash_file,
+            proc = subprocess.Popen("bash %s" % bash_file,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT, shell=True)
 
@@ -70,7 +70,7 @@ def receive(project):
     return project
 
 
-
+app = bottle.app()
 #def dev_server():
 #    bottle.run(host='0.0.0.0', port=8080, debug=True)
 #
