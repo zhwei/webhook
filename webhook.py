@@ -37,10 +37,14 @@ def index():
 @bottle.route("/hook/<project>/", method="POST")
 def receive(project):
 
+    if request.headers.get('X-Github-Event') != "push" or \
+        request.headers.get('User-Agent').startswith('GitHub Hookshot'):
+            return json.dumps({"status":"No Permisstion"})
+
     if request.method == "POST":
 
-        config_file = "./configs/%s.json" % project
-        bash_file = "./shell/%s.sh" % project
+        config_file = os.path.join(BASE, "configs/%s.json" % project)
+        bash_file = os.path.join(BASE, "shell/%s.sh" % project)
         log_file = os.path.join(BASE, "logs/%s.log" % project)
 
         logger = log_handler(log_file)
@@ -50,7 +54,7 @@ def receive(project):
                 con_json = json.loads(fi.read())
             deploy_branch = con_json.get("branch", "master")
         except IOError:
-            return "Json File Wrong"
+            return json.dumps({"status":"Json File Wrong"})
 
         if project != request.json['repository']['name']:
             return json.dumps({"status":False})
@@ -74,7 +78,7 @@ def receive(project):
 
         return json.dumps({"status": True})
 
-    return project
+    return json.dumps({"status": "Forbidden"})
 
 
 app = bottle.app()
