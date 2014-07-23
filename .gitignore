@@ -1,6 +1,7 @@
 *.sh
 *.json
 *.log
+.idea/*
 
 # Created by http://www.gitignore.io
 
