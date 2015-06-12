@@ -122,7 +122,8 @@ def handler(project):
         except IOError:
             return json.dumps({"status":"Json File Wrong"})
 
-        request_json = json.loads(request._get_body_string().decode())
+        request_json = request.json
+
         if project != request_json['repository']['name']:
             return json.dumps({"status":False})
 
@@ -144,4 +145,4 @@ def handler(project):
 
 
 if '__main__' == __name__:
-    bottle.run(host='0.0.0.0', port=1234, debug=True, reloader=True)
+    bottle.run(host='0.0.0.0', port=1235, debug=True, reloader=True)
